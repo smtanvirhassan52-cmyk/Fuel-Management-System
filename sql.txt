@@ -1,0 +1,214 @@
+## 🧱 Table Creation Queries
+
+### Roles Table
+```sql
+CREATE TABLE IF NOT EXISTS Roles (
+    RoleID INTEGER PRIMARY KEY,
+    RoleName TEXT NOT NULL
+);
+```
+
+### Users Table
+```sql
+CREATE TABLE IF NOT EXISTS Users (
+    UserID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    Email TEXT UNIQUE NOT NULL,
+    PasswordHash TEXT NOT NULL,
+    Phone TEXT,
+    RoleID INTEGER NOT NULL DEFAULT 3,
+    LimitPerMonth REAL NOT NULL DEFAULT 100,
+    Status TEXT NOT NULL DEFAULT 'Active',
+    CreatedAt TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
+);
+```
+
+### Fuel Table
+```sql
+CREATE TABLE IF NOT EXISTS Fuel (
+    FuelID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FuelName TEXT NOT NULL,
+    PricePerLiter REAL NOT NULL,
+    Quantity REAL NOT NULL DEFAULT 0,
+    Status TEXT NOT NULL DEFAULT 'Available',
+    CreatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+);
+```
+
+### Orders Table
+```sql
+CREATE TABLE IF NOT EXISTS Orders (
+    OrderID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL,
+    FuelID INTEGER NOT NULL,
+    Quantity REAL NOT NULL,
+    TotalPrice REAL NOT NULL,
+    Status TEXT NOT NULL DEFAULT 'Pending',
+    CreatedAt TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (FuelID) REFERENCES Fuel(FuelID)
+);
+```
+
+### Payments Table
+```sql
+CREATE TABLE IF NOT EXISTS Payments (
+    PaymentID INTEGER PRIMARY KEY AUTOINCREMENT,
+    OrderID INTEGER NOT NULL,
+    UserID INTEGER NOT NULL,
+    Amount REAL NOT NULL,
+    PaymentMethod TEXT NOT NULL DEFAULT 'Cash',
+    Status TEXT NOT NULL DEFAULT 'Pending',
+    PaymentDate TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+```
+
+### Reviews Table
+```sql
+CREATE TABLE IF NOT EXISTS Reviews (
+    ReviewID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL,
+    OrderID INTEGER NOT NULL,
+    Rating INTEGER NOT NULL CHECK(Rating BETWEEN 1 AND 5),
+    Comment TEXT,
+    ReviewDate TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID)
+);
+```
+
+### ActivityLogs Table
+```sql
+CREATE TABLE IF NOT EXISTS ActivityLogs (
+    LogID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL,
+    Action TEXT NOT NULL,
+    Details TEXT,
+    LogDate TEXT NOT NULL DEFAULT (datetime('now')),
+    IPAddress TEXT DEFAULT '127.0.0.1',
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+```
+
+---
+
+## 🌱 Seed Data
+
+### Default Roles
+```sql
+INSERT INTO Roles VALUES (1, 'SuperAdmin');
+INSERT INTO Roles VALUES (2, 'Admin');
+INSERT INTO Roles VALUES (3, 'User');
+```
+
+### Default Users
+```sql
+-- Super Admin
+INSERT INTO Users (Name, Email, PasswordHash, Phone, RoleID, LimitPerMonth, Status)
+VALUES ('Super Admin', 'admin@fuelms.com', '[hashed_password]', '01700000000', 1, 9999, 'Active');
+
+-- Sample Admin
+INSERT INTO Users (Name, Email, PasswordHash, Phone, RoleID, LimitPerMonth, Status)
+VALUES ('John Admin', 'john@fuelms.com', '[hashed_password]', '01711111111', 2, 9999, 'Active');
+
+-- Sample Customer
+INSERT INTO Users (Name, Email, PasswordHash, Phone, RoleID, LimitPerMonth, Status)
+VALUES ('John Doe', 'john@example.com', '[hashed_password]', '01722222222', 3, 100, 'Active');
+```
+
+### Default Fuel Types
+```sql
+INSERT INTO Fuel (FuelName, PricePerLiter, Quantity, Status) VALUES ('Petrol', 110.00, 2500, 'Available');
+INSERT INTO Fuel (FuelName, PricePerLiter, Quantity, Status) VALUES ('Diesel', 100.00, 2500, 'Available');
+INSERT INTO Fuel (FuelName, PricePerLiter, Quantity, Status) VALUES ('Octane', 130.00, 800, 'Available');
+```
+
+---
+
+## 🔍 Key Database Queries
+
+### Fuel Management
+```sql
+-- Get all fuel
+SELECT * FROM Fuel ORDER BY FuelName;
+
+-- Add new fuel
+INSERT INTO Fuel (FuelName, PricePerLiter, Quantity, Status) VALUES (@n, @p, @q, @s);
+
+-- Update fuel
+UPDATE Fuel SET FuelName=@n, PricePerLiter=@p, Quantity=@q, Status=@s WHERE FuelID=@id;
+
+-- Soft delete fuel
+UPDATE Fuel SET Status='Unavailable' WHERE FuelID=@id;
+
+-- Add stock
+UPDATE Fuel SET Quantity = Quantity + @q WHERE FuelID=@id;
+```
+
+### Order Management
+```sql
+-- Place order (check stock → check monthly limit → insert order → deduct stock)
+SELECT * FROM Fuel WHERE FuelID=@id AND Status='Available';
+SELECT LimitPerMonth FROM Users WHERE UserID=@id;
+SELECT COALESCE(SUM(o.Quantity), 0) FROM Orders o
+WHERE o.UserID=@uid AND o.Status != 'Cancelled'
+AND strftime('%Y-%m', o.CreatedAt) = strftime('%Y-%m', 'now');
+INSERT INTO Orders (UserID, FuelID, Quantity, TotalPrice, Status) VALUES (@u, @f, @q, @t, 'Pending');
+UPDATE Fuel SET Quantity = Quantity - @q WHERE FuelID=@id;
+
+-- Get orders with user and fuel info
+SELECT o.*, u.Name as UserName, f.FuelName
+FROM Orders o
+JOIN Users u ON o.UserID = u.UserID
+JOIN Fuel f ON o.FuelID = f.FuelID
+ORDER BY o.CreatedAt DESC;
+
+-- Update order status
+UPDATE Orders SET Status=@s WHERE OrderID=@id;
+```
+
+### Payment Management
+```sql
+-- Make payment
+INSERT INTO Payments (OrderID, UserID, Amount, PaymentMethod, Status, PaymentDate)
+VALUES (@oid, @uid, @amt, @mth, 'Completed', datetime('now'));
+
+-- Approve order
+UPDATE Orders SET Status='Approved' WHERE OrderID=@id AND Status='Pending';
+
+-- Get payment history
+SELECT p.*, u.Name as UserName
+FROM Payments p
+JOIN Users u ON p.UserID = u.UserID
+ORDER BY p.PaymentDate DESC;
+```
+
+### Reviews
+```sql
+-- Add review (after duplicate check)
+SELECT COUNT(*) FROM Reviews WHERE UserID=@u AND OrderID=@o;
+INSERT INTO Reviews (UserID, OrderID, Rating, Comment) VALUES (@u, @o, @r, @c);
+
+-- Get reviews
+SELECT r.*, u.Name as UserName
+FROM Reviews r
+JOIN Users u ON r.UserID = u.UserID
+ORDER BY r.ReviewDate DESC;
+```
+
+### Dashboard Statistics
+```sql
+SELECT
+    (SELECT COUNT(*) FROM Users WHERE RoleID=3 AND Status='Active') AS TotalUsers,
+    (SELECT COUNT(*) FROM Users WHERE RoleID IN (1,2) AND Status='Active') AS TotalAdmins,
+    (SELECT COUNT(*) FROM Orders) AS TotalOrders,
+    (SELECT COALESCE(SUM(Amount), 0) FROM Payments WHERE Status='Completed') AS TotalRevenue,
+    (SELECT COUNT(*) FROM Orders WHERE Status='Pending') AS PendingOrders,
+    (SELECT COALESCE(SUM(Amount), 0) FROM Payments
+     WHERE Status='Completed' AND date(PaymentDate) = date('now')) AS TodaySales;
+```
+
+---

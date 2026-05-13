@@ -1,0 +1,185 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>FuelMS</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Forms\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="Forms\RegisterForm.Designer.cs">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\RegisterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="Forms\ChangePasswordForm.Designer.cs">
+      <DependentUpon>ChangePasswordForm.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\ChangePasswordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="Forms\SuperAdminDashboard.Designer.cs">
+      <DependentUpon>SuperAdminDashboard.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\SuperAdminDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="Forms\AdminDashboard.Designer.cs">
+      <DependentUpon>AdminDashboard.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\AdminDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="Forms\CustomerDashboard.Designer.cs">
+      <DependentUpon>CustomerDashboard.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\CustomerDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="Forms\FuelEditDialog.Designer.cs">
+      <DependentUpon>FuelEditDialog.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\FuelEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="Forms\UserEditDialog.Designer.cs">
+      <DependentUpon>UserEditDialog.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\UserEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+
+    <Compile Update="Forms\DashboardViews.Designer.cs">
+      <DependentUpon>DashboardViews.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\DashboardViews.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\CustomerDashboardView.Designer.cs">
+      <DependentUpon>CustomerDashboardView.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\CustomerDashboardView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\FuelPanel.Designer.cs">
+      <DependentUpon>FuelPanel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\FuelPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\FuelListView.Designer.cs">
+      <DependentUpon>FuelListView.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\FuelListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\OrdersPanel.Designer.cs">
+      <DependentUpon>OrdersPanel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\OrdersPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\PlaceOrderView.Designer.cs">
+      <DependentUpon>PlaceOrderView.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\PlaceOrderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\LimitView.Designer.cs">
+      <DependentUpon>LimitView.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\LimitView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\UsersPanel.Designer.cs">
+      <DependentUpon>UsersPanel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\UsersPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\PaymentsPanel.Designer.cs">
+      <DependentUpon>PaymentsPanel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\PaymentsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\ReviewsPanel.Designer.cs">
+      <DependentUpon>ReviewsPanel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\ReviewsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\ReportsPanel.Designer.cs">
+      <DependentUpon>ReportsPanel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\ReportsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\LogsPanel.Designer.cs">
+      <DependentUpon>LogsPanel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\LogsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+
+    <Compile Update="Forms\SettingsPanel.Designer.cs">
+      <DependentUpon>SettingsPanel.cs</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Forms\SettingsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

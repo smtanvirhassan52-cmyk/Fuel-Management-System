@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="Forms\AdminDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\BaseDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\CustomerDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\DashboardViews.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\FuelPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\OrdersPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\SuperAdminDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\UsersPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
